@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/reset.css">
+    <title>WABI-SABI</title>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="../img/logo.png" alt="WABI-SABI Logo" class="logo_img">
+            <h1>WABI-SABI</h1>
+        </div>
+        <div class="search">
+            <div class="search-container">
+                <input type="search" id="search-input"placeholder="Найти блюда..." class="search-input"/>
+                <svg class="search-icon" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196 7.5 7.5 0 0 0 10.607 10.607Z" stroke-linejoin="round" stroke-linecap="round"/>
+                </svg>
+            </div>
+        </div>
+        <div class="user-panel">
+            <div class="panel">
+                <img src="../img/profile.png" alt="profile" class="panel-icon">
+                <a href="#" id="user-link" class="panel-links">Войти</a>
+            </div>
+            <div class="panel cart-panel">
+                <div class="cart-icon-wrapper">
+                    <img src="../img/cart.png" alt="Корзина" class="cart-icon">
+                    <span class="cart-count">0</span>
+                </div>
+                <a href="cart.html" class="panel-links">Корзина</a>
+            </div>
+        </div>
+    </header>
+    <!-- окно регистрации -->
+    <div class="modal" id="auth-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal">×</span>
+            <h2 id="modal-title">Вход в аккаунт</h2>
+            <div class="modal-tabs">
+                <button class="tab-btn active" data-tab="login">Войти</button>
+                <button class="tab-btn" data-tab="register">Регистрация</button>
+            </div>
+            <form id="login-form" class="auth-form">
+                <input type="email" id="login-email" placeholder="Email" required>
+                <input type="password" id="login-password" placeholder="Пароль" required>
+                <button type="submit">Войти</button>
+            </form>
+            <form id="register-form" class="auth-form hidden">
+                <input type="text" id="reg-name" placeholder="Имя" required>
+                <input type="email" id="reg-email" placeholder="Email" required>
+                <input type="tel" id="reg-phone" placeholder="Телефон">
+                <input type="password" id="reg-password" placeholder="Пароль" required>
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+        </div>
+    </div>
+
+    <main>
+        <div class="left-column">
+            <div class="categories">
+                <h2>Что выберем?</h2>
+                <ul>
+                    <li><a href="#roll">Роллы</a></li>
+                    <li><a href="#pizza">Пиццы</a></li>
+                    <li><a href="#traifls">Трайфлы</a></li>
+                    <li><a href="#snek">Закуски</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="right-column">
+            <h2 id="#roll">Роллы</h2>
+            <div class="product-list">
+                <div class="product-item">
+                    <img src="../img/roll/product1.jpg" alt="Ролл Филадельфия">
+                    <div class="product-item-content">
+                        <h3>Ролл "Филадельфия"</h3>
+                        <p>Рис, нори, сыр творожный, семга</p>
+                        <p class="price"><strong>3150 ₸</strong></p>
+                        <button class="add-to-cart-btn"
+                                data-id="1"
+                                data-name="Ролл Филадельфия"
+                                data-price="3150"
+                                onclick="addToCart(this)">
+                            В корзину
+                        </button>
+                    </div>
+                </div>
+                <div class="product-item">
+                    <img src="../img/roll/product2.jpg" alt="Ролл Филадельфия с огурцом">
+                    <div class="product-item-content">
+                        <h3>Ролл "Филадельфия с огурцом"</h3>
+                        <p>Рис, нори, сыр творожный, семга, огурец</p>
+                        <p class="price"><strong>3150 ₸</strong></p>
+                        <button class="add-to-cart-btn"
+                                data-id="2"
+                                data-name="Ролл Филадельфия с огурцом"
+                                data-price="3150"
+                                onclick="addToCart(this)">
+                            В корзину
+                        </button>
+                    </div>
+                </div>
+                <div class="product-item">
+                    <img src="../img/roll/product3.jpg" alt="Ролл Филадельфия Эби">
+                    <div class="product-item-content">
+                        <h3>Ролл "Филадельфия Эби"</h3>
+                        <p>Рис, нори, сыр творожный, креветки Темпуро, семга</p>
+                        <p class="price"><strong>3150 ₸</strong></p>
+                        <button class="add-to-cart-btn"
+                                data-id="3"
+                                data-name="Ролл Филадельфия Эби"
+                                data-price="3150"
+                                onclick="addToCart(this)">
+                            В корзину
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <h2 id="pizza">Пиццы</h2>
+            <div class="product-list">
+                <div class="product-item">
+                    <img src="../img/pizza/pizza1.jpg" alt="Пицца с семгой">
+                    <div class="product-item-content">
+                        <h3>Пицца "С семгой"</h3>
+                        <p>Тесто, сыр Моцарелла, соус Пицца, семга, сыр творожный, базилик, орегано</p>
+                        <p class="price"><strong>4100 ₸</strong></p>
+                        <button class="add-to-cart-btn"
+                                data-id="4"
+                                data-name="Пицца с семгой"
+                                data-price="4100"
+                                onclick="addToCart(this)">
+                            В корзину
+                        </button>
+                    </div>
+                </div>
+                <div class="product-item">
+                    <img src="../img/pizza/pizza2.jpg" alt="Пицца охотничья">
+                    <div class="product-item-content">
+                        <h3>Пицца "Охотничья"</h3>
+                        <p>Тесто, сыр Моцарелла, соус Пицца, колбаски охотничьи, корнишоны, базилик, орегано</p>
+                        <p class="price"><strong>2990 ₸</strong></p>
+                        <button class="add-to-cart-btn"
+                                data-id="5"
+                                data-name="Пицца охотничья"
+                                data-price="2990"
+                                onclick="addToCart(this)">
+                            В корзину
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <h2 id="traifls">Трайфлы</h2>
+            <div class="product-list">
+                <div class="product-item">
+                    <img src="../img/traifls/traifl1.jpg" alt="Трайфл с семгой">
+                    <div class="product-item-content">
+                        <h3>Трайфл с семгой</h3>
+                        <p>Рис, сыр творожный, семга, соус унаги, огурец, кунжут</p>
+                        <p class="price"><strong>1900 ₸</strong></p>
+                        <button class="add-to-cart-btn"
+                                data-id="6"
+                                data-name="Трайфл с семгой"
+                                data-price="1900"
+                                onclick="addToCart(this)">
+                            В корзину
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <h2 id="snek">Закуски</h2>
+            <div class="product-list">
+                <div class="product-item">
+                    <img src="../img/snek/snek1.jpg" alt="Картошка фри">
+                    <div class="product-item-content">
+                        <h3>Картошка Фри</h3>
+                        <p>150 гр. + соус</p>
+                        <p class="price"><strong>890 ₸</strong></p>
+                        <button class="add-to-cart-btn"
+                                data-id="7"
+                                data-name="Картошка фри"
+                                data-price="890"
+                                onclick="addToCart(this)">
+                            В корзину
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="../js/search.js"></script>
+    <script src="../js/cart.js"></script>
+    <script src="../js/auth.js"></script>
+</body>
+</html>

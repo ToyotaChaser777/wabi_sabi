@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/profile.css">
+    <title>WABI-SABI — Личный кабинет</title>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo" style="text-decoration: none; color: inherit;">
+            <img src="../img/logo.png" alt="WABI-SABI Logo" class="logo_img">
+            <h1>WABI-SABI</h1>
+        </a>
+        <div class="user-panel">
+            <div class="panel">
+                <img src="../img/profile.png" alt="profile" class="panel-icon">
+                <a href="profile.html" class="panel-links" id="user-link">Кабинет</a>
+            </div>
+            <div class="panel cart-panel">
+                <div class="cart-icon-wrapper">
+                    <img src="../img/cart.png" alt="Корзина" class="cart-icon">
+                    <span class="cart-count">0</span>
+                </div>
+                <a href="cart.html" class="panel-links">Корзина</a>
+            </div>
+        </div>
+    </header>
+    <main class="profile-page">
+        <div class="profile-container">
+            <h1>Личный кабинет</h1>
+            <div class="profile-info" id="profile-info">
+                <p>Загрузка...</p>
+            </div>
+            <div class="orders-section">
+                <h2>Мои заказы</h2>
+                <div id="orders-list">
+                    <p>Загрузка заказов...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="../js/auth.js"></script>
+    <script src="../js/profile.js"></script>
+    <script src="../js/orders.js"></script>
+</body>
+</html>
