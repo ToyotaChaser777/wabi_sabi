@@ -1,3 +1,5 @@
+const API_URL = 'https://wabi-sabi-8pwb.onrender.com';
+
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 // добавление товара
@@ -113,7 +115,7 @@ async function checkout() {
     const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
     try {
-        const res = await fetch('http://localhost:5000/api/orders', {
+        const res = await fetch(`${API_URL}/api/orders`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

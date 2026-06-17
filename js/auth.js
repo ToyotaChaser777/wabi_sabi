@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000';
+const API_URL = 'https://wabi-sabi-8pwb.onrender.com';
 
 document.addEventListener('DOMContentLoaded', () => {
     updateHeaderUser();
