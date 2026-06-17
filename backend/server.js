@@ -11,10 +11,6 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, '..')));
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'index.html'));
-});
-
 const SECRET_KEY = '8bgn_clPRLksiZ-yoKnCAbCzXhxMDg';
 
 // Подключение к SQLite
