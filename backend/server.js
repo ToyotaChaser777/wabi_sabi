@@ -9,19 +9,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ====================== СЕРВИНГ ФРОНТЕНДА ======================
-app.use(express.static(path.join(__dirname, '..')));
-
-// Главная страница
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'index.html'));
-});
-
-// Fallback для всех остальных страниц
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'index.html'));
-});
-
 const SECRET_KEY = '8bgn_clPRLksiZ-yoKnCAbCzXhxMDg';
 
 // Подключение к SQLite
@@ -235,6 +222,16 @@ app.get('/api/orders/:user_id', (req, res) => {
             res.json({ success: true, orders });
         }
     );
+});
+
+app.use(express.static(path.join(__dirname, '..')));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
