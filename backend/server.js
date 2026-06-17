@@ -9,16 +9,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, '..')));
+const frontendPath = path.join(__dirname, '..');
 
-// Главная страница
+app.use(express.static(frontendPath));
+
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'index.html'));
+    res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
-// Fallback для всех остальных маршрутов (чтобы работали profile.html, cart.html и т.д.)
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'index.html'));
+    res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
 const SECRET_KEY = '8bgn_clPRLksiZ-yoKnCAbCzXhxMDg';
