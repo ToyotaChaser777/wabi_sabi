@@ -224,16 +224,21 @@ app.get('/api/orders/:user_id', (req, res) => {
     );
 });
 
-const frontendPath = path.resolve(__dirname, '..');
+const frontendRoot = path.join(__dirname, '..');
 
-app.use(express.static(frontendPath));
+app.use(express.static(frontendRoot));
+
+app.use('/html', express.static(path.join(frontendRoot, 'html')));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'index.html'));
+    res.sendFile(path.join(frontendRoot, 'html', 'index.html'));
 });
 
 app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'index.html'));
+    if (req.path.startsWith('/api')) {
+        return res.status(404).json({ success: false, message: 'Not found' });
+    }
+    res.sendFile(path.join(frontendRoot, 'html', 'index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
