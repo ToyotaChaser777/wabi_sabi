@@ -224,14 +224,16 @@ app.get('/api/orders/:user_id', (req, res) => {
     );
 });
 
-app.use(express.static(path.join(__dirname, '..')));
+const frontendPath = path.resolve(__dirname, '..');
+
+app.use(express.static(frontendPath));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'index.html'));
+    res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'index.html'));
+    res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
