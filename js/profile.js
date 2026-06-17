@@ -1,4 +1,3 @@
-// js/profile.js
 document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('user'));
     const profileInfo = document.getElementById('profile-info');

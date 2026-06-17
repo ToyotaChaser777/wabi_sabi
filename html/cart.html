@@ -13,7 +13,6 @@
             <img src="../img/logo.png" alt="WABI-SABI Logo" class="logo_img">
             <h1>WABI-SABI</h1>
         </a>
-
         <div class="user-panel">
             <div class="panel">
                 <img src="../img/profile.png" alt="profile" class="panel-icon">
@@ -28,26 +27,19 @@
             </div>
         </div>
     </header>
-
-    <!-- ==================== МОДАЛЬНОЕ ОКНО ВХОДА ==================== -->
     <div class="modal" id="auth-modal">
         <div class="modal-content">
             <span class="close-modal" id="close-modal">×</span>
             <h2 id="modal-title">Вход в аккаунт</h2>
-
             <div class="modal-tabs">
                 <button class="tab-btn active" data-tab="login">Войти</button>
                 <button class="tab-btn" data-tab="register">Регистрация</button>
             </div>
-
-            <!-- Форма входа -->
             <form id="login-form" class="auth-form">
                 <input type="email" id="login-email" placeholder="Email" required>
                 <input type="password" id="login-password" placeholder="Пароль" required>
                 <button type="submit">Войти</button>
             </form>
-
-            <!-- Форма регистрации -->
             <form id="register-form" class="auth-form hidden">
                 <input type="text" id="reg-name" placeholder="Имя" required>
                 <input type="email" id="reg-email" placeholder="Email" required>
@@ -57,13 +49,10 @@
             </form>
         </div>
     </div>
-
     <main class="cart-page">
         <div class="cart-container">
             <h1>Корзина</h1>
-            
             <div id="cart-items" class="cart-items"></div>
-
             <div class="cart-summary">
                 <div class="summary-row">
                     <span>Сумма товаров:</span>
@@ -77,13 +66,10 @@
                     <span>Итого к оплате:</span>
                     <span id="final-total">0 ₸</span>
                 </div>
-
                 <button id="checkout-btn" class="checkout-btn">Оформить заказ</button>
             </div>
         </div>
     </main>
-
-    <!-- Скрипты -->
     <script src="../js/auth.js"></script>
     <script src="../js/cart.js"></script>
 </body>

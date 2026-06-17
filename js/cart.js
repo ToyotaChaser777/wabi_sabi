@@ -1,8 +1,6 @@
-// js/cart.js
-
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-// Добавление товара
+// добавление товара
 window.addToCart = function(button) {
     const id = parseInt(button.dataset.id);
     const name = button.dataset.name;
@@ -21,14 +19,14 @@ window.addToCart = function(button) {
     showToast(`${name} добавлен в корзину`);
 };
 
-// Обновление счётчика
+// счётчик
 function updateCartCount() {
     const count = cart.reduce((sum, item) => sum + item.quantity, 0);
     const countEl = document.querySelector('.cart-count');
     if (countEl) countEl.textContent = count;
 }
 
-// Показ уведомления
+// уведомление
 function showToast(message) {
     const toast = document.createElement('div');
     toast.style.cssText = `position:fixed;bottom:20px;right:20px;background:#d9230e;color:white;padding:15px 25px;border-radius:8px;z-index:3000;`;
@@ -37,7 +35,7 @@ function showToast(message) {
     setTimeout(() => toast.remove(), 2500);
 }
 
-// ==================== СТРАНИЦА КОРЗИНЫ ====================
+// Корзина
 function renderCart() {
     const container = document.getElementById('cart-items');
     const totalAmountEl = document.getElementById('total-amount');
@@ -84,7 +82,7 @@ function renderCart() {
     finalTotalEl.textContent = total + ' ₸';
 }
 
-// Изменение количества
+// изменение кол-ва
 window.changeQuantity = function(index, delta) {
     cart[index].quantity += delta;
     if (cart[index].quantity < 1) cart[index].quantity = 1;
@@ -94,7 +92,7 @@ window.changeQuantity = function(index, delta) {
     updateCartCount();
 };
 
-// Удаление товара
+// удаление
 window.removeFromCart = function(index) {
     cart.splice(index, 1);
     localStorage.setItem('cart', JSON.stringify(cart));
@@ -102,7 +100,7 @@ window.removeFromCart = function(index) {
     updateCartCount();
 };
 
-// Оформление заказа
+// оформление заказа
 async function checkout() {
     if (cart.length === 0) return;
 
@@ -129,7 +127,6 @@ async function checkout() {
 
         if (data.success) {
             alert(data.message);
-            // Очищаем корзину
             cart = [];
             localStorage.setItem('cart', JSON.stringify(cart));
             renderCart();
@@ -142,7 +139,6 @@ async function checkout() {
     }
 }
 
-// Инициализация
 document.addEventListener('DOMContentLoaded', () => {
     cart = JSON.parse(localStorage.getItem('cart')) || [];
     updateCartCount();

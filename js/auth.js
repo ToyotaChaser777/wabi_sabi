@@ -1,11 +1,10 @@
-// js/auth.js
 const API_URL = 'http://localhost:5000';
 
 document.addEventListener('DOMContentLoaded', () => {
-    updateHeaderUser(); // Обновляем шапку при загрузке страницы
+    updateHeaderUser();
 
     const modal = document.getElementById('auth-modal');
-    const loginLink = document.getElementById('user-link'); // теперь это user-link
+    const loginLink = document.getElementById('user-link');
     const closeModal = document.getElementById('close-modal');
     const tabBtns = document.querySelectorAll('.tab-btn');
     const loginForm = document.getElementById('login-form');
@@ -13,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (loginLink) {
         loginLink.addEventListener('click', (e) => {
-            // Если пользователь уже авторизован — ведём в профиль
+            // Проверка входа
             const user = JSON.parse(localStorage.getItem('user'));
             if (user) {
                 e.preventDefault();
@@ -32,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Переключение вкладок
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             tabBtns.forEach(b => b.classList.remove('active'));
@@ -48,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ==================== РЕГИСТРАЦИЯ ====================
+    // регистрация
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -76,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ==================== ЛОГИН ====================
+    // логин
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -96,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
                     modal.style.display = 'none';
-                    updateHeaderUser(); // ← Обновляем шапку после входа
+                    updateHeaderUser();
                 }
             } catch (err) {
                 alert('Ошибка соединения с сервером');
@@ -105,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// ==================== ФУНКЦИЯ ОБНОВЛЕНИЯ ШАПКИ ====================
+// обновление шапки
 function updateHeaderUser() {
     const userLink = document.getElementById('user-link');
     if (!userLink) return;

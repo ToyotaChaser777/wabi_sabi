@@ -1,10 +1,8 @@
-// js/search.js
-
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input');
     if (!searchInput) return;
 
-    // Находим все карточки товаров на странице
+    // поиск карточек
     const productItems = document.querySelectorAll('.product-item');
 
     searchInput.addEventListener('input', () => {
@@ -16,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const productName = title.textContent.toLowerCase();
 
-            // Если название содержит поисковый запрос — показываем, иначе скрываем
+            // если название содержит поисковый запрос — показываем
             if (productName.includes(searchTerm)) {
                 item.style.display = 'flex';
             } else {
@@ -25,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Опционально: очистка поиска при нажатии Escape
+    // очистка поиска при нажатии esc
     searchInput.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             searchInput.value = '';

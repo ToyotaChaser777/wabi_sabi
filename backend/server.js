@@ -52,17 +52,14 @@ db.serialize(() => {
     )`);
 });
 
-// ====================== РЕГИСТРАЦИЯ ======================
+// Регистрация
 app.post('/api/register', async (req, res) => {
     const { name, email, password, phone } = req.body;
-
     if (!name || !email || !password) {
         return res.status(400).json({ success: false, message: "Заполните имя, email и пароль" });
     }
-
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
-
         db.run('INSERT INTO users (name, email, password, phone) VALUES (?, ?, ?, ?)',
             [name, email, hashedPassword, phone || null],
             function(err) {
@@ -79,7 +76,7 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
-// ====================== ЛОГИН ======================
+// Логин
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
 
@@ -108,12 +105,11 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-// ====================== ОТПРАВКА ЗАКАЗА В TELEGRAM ======================
+// Уведомление в Тг
 async function sendOrderToTelegram(orderData, user) {
     const BOT_TOKEN = "8444075254:AAE7yxOVhNYQTROXzhSWQEu2LDuHiXa8EVg";
     const CHAT_ID   = "565360334";
 
-    // Проверка, что токен реальный (не placeholder)
     if (!BOT_TOKEN || BOT_TOKEN.length < 30) {
         console.log("⚠️ Telegram не настроен (токен не указан)");
         return;
@@ -147,16 +143,16 @@ async function sendOrderToTelegram(orderData, user) {
         const result = await response.json();
 
         if (result.ok) {
-            console.log('✅ Заказ успешно отправлен в Telegram');
+            console.log('Заказ успешно отправлен в Telegram');
         } else {
-            console.error('❌ Ошибка Telegram:', result.description);
+            console.error('Ошибка Telegram:', result.description);
         }
     } catch (err) {
-        console.error('❌ Ошибка отправки в Telegram:', err.message);
+        console.error('Ошибка отправки в Telegram:', err.message);
     }
 }
 
-// ====================== ОФОРМЛЕНИЕ ЗАКАЗА ======================
+// оформ. заказа
 app.post('/api/orders', (req, res) => {
     const { user_id, items, total } = req.body;
 
@@ -181,7 +177,6 @@ app.post('/api/orders', (req, res) => {
             });
             stmt.finalize();
 
-            // Получаем данные пользователя для Telegram
             db.get('SELECT name, email, phone FROM users WHERE id = ?', [user_id], (err, user) => {
                 if (!err && user) {
                     sendOrderToTelegram({
@@ -201,7 +196,7 @@ app.post('/api/orders', (req, res) => {
     );
 });
 
-// ====================== ИСТОРИЯ ЗАКАЗОВ ======================
+// история заказов
 app.get('/api/orders/:user_id', (req, res) => {
     const userId = req.params.user_id;
 
