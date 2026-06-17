@@ -1,4 +1,4 @@
-const API_URL = 'https://wabi-sabi-8pwb.onrender.com';
+window.API_URL = 'https://wabi-sabi-8pwb.onrender.com';
 
 document.addEventListener('DOMContentLoaded', () => {
     updateHeaderUser();
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const phone = document.getElementById('reg-phone').value.trim();
 
             try {
-                const res = await fetch(`${API_URL}/api/register`, {
+                const res = await fetch(`${window.API_URL}/api/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, email, password, phone })
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const password = document.getElementById('login-password').value;
 
             try {
-                const res = await fetch(`${API_URL}/api/login`, {
+                const res = await fetch(`${window.API_URL}/api/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })

@@ -1,4 +1,4 @@
-const API_URL = 'https://wabi-sabi-8pwb.onrender.com';
+window.API_URL = 'https://wabi-sabi-8pwb.onrender.com';
 
 document.addEventListener('DOMContentLoaded', () => {
     loadOrders();
@@ -14,7 +14,7 @@ async function loadOrders() {
     }
 
     try {
-        const res = await fetch(`${API_URL}/api/orders/${user.id}`);
+        const res = await fetch(`${window.API_URL}/api/orders/${user.id}`);
         const data = await res.json();
 
         if (!data.success || !data.orders || data.orders.length === 0) {

@@ -226,17 +226,27 @@ app.get('/api/orders/:user_id', (req, res) => {
 
 const frontendRoot = path.join(__dirname, '..');
 
+// Раздаём статику (js, styles, img, html)
 app.use(express.static(frontendRoot));
 
-app.use('/html', express.static(path.join(frontendRoot, 'html')));
-
+// Главная страница
 app.get('/', (req, res) => {
     res.sendFile(path.join(frontendRoot, 'html', 'index.html'));
 });
 
+// Отдельные страницы (чтобы переходы работали)
+app.get('/cart.html', (req, res) => {
+    res.sendFile(path.join(frontendRoot, 'html', 'cart.html'));
+});
+
+app.get('/profile.html', (req, res) => {
+    res.sendFile(path.join(frontendRoot, 'html', 'profile.html'));
+});
+
+// Fallback только для неизвестных маршрутов (не для файлов)
 app.get('*', (req, res) => {
-    if (req.path.startsWith('/api')) {
-        return res.status(404).json({ success: false, message: 'Not found' });
+    if (req.path.includes('.')) {
+        return res.status(404).send('Not found');
     }
     res.sendFile(path.join(frontendRoot, 'html', 'index.html'));
 });

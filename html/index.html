@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/styles.css">
-    <link rel="stylesheet" href="../styles/reset.css">
+    <link rel="stylesheet" href="/styles/styles.css">
+    <link rel="stylesheet" href="/styles/reset.css">
     <title>WABI-SABI</title>
 </head>
 <body>
     <header>
         <div class="logo">
-            <img src="../img/logo.png" alt="WABI-SABI Logo" class="logo_img">
+            <img src="/img/logo.png" alt="WABI-SABI Logo" class="logo_img">
             <h1>WABI-SABI</h1>
         </div>
         <div class="search">
             <div class="search-container">
-                <input type="search" id="search-input"placeholder="Найти блюда..." class="search-input"/>
+                <input type="search" id="search-input" placeholder="Найти блюда..." class="search-input"/>
                 <svg class="search-icon" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196 7.5 7.5 0 0 0 10.607 10.607Z" stroke-linejoin="round" stroke-linecap="round"/>
                 </svg>
@@ -23,18 +23,20 @@
         </div>
         <div class="user-panel">
             <div class="panel">
-                <img src="../img/profile.png" alt="profile" class="panel-icon">
+                <img src="/img/profile.png" alt="profile" class="panel-icon">
                 <a href="#" id="user-link" class="panel-links">Войти</a>
             </div>
             <div class="panel cart-panel">
                 <div class="cart-icon-wrapper">
-                    <img src="../img/cart.png" alt="Корзина" class="cart-icon">
+                    <img src="/img/cart.png" alt="Корзина" class="cart-icon">
                     <span class="cart-count">0</span>
                 </div>
-                <a href="cart.html" class="panel-links">Корзина</a>
+                <a href="/html/cart.html" class="panel-links">Корзина</a>
             </div>
         </div>
     </header>
+
+    <!-- Модальное окно авторизации -->
     <div class="modal" id="auth-modal">
         <div class="modal-content">
             <span class="close-modal" id="close-modal">×</span>
@@ -57,7 +59,6 @@
             </form>
         </div>
     </div>
-
     <main>
         <div class="left-column">
             <div class="categories">
@@ -506,8 +507,8 @@
             </p>
         </div>
     </footer>
-    <script src="../js/search.js"></script>
-    <script src="../js/cart.js"></script>
-    <script src="../js/auth.js"></script>
+    <script src="/js/search.js"></script>
+    <script src="/js/cart.js"></script>
+    <script src="/js/auth.js"></script>
 </body>
 </html>
