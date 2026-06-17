@@ -11,6 +11,16 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, '..')));
 
+// Главная страница
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
+
+// Fallback для всех остальных маршрутов (чтобы работали profile.html, cart.html и т.д.)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
+
 const SECRET_KEY = '8bgn_clPRLksiZ-yoKnCAbCzXhxMDg';
 
 // Подключение к SQLite
