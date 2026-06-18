@@ -23,17 +23,16 @@ const db = new sqlite3.Database(dbPath, (err) => {
 
 // Создание таблиц
 db.serialize(() => {
-    // Таблица пользователей
     db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         email TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
         phone TEXT,
+        is_admin INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
-    // Таблица заказов
     db.run(`CREATE TABLE IF NOT EXISTS orders (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
@@ -42,7 +41,6 @@ db.serialize(() => {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
-    // Таблица позиций заказа
     db.run(`CREATE TABLE IF NOT EXISTS order_items (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         order_id INTEGER,
@@ -52,31 +50,7 @@ db.serialize(() => {
     )`);
 });
 
-// Регистрация
-app.post('/api/register', async (req, res) => {
-    const { name, email, password, phone } = req.body;
-    if (!name || !email || !password) {
-        return res.status(400).json({ success: false, message: "Заполните имя, email и пароль" });
-    }
-    try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        db.run('INSERT INTO users (name, email, password, phone) VALUES (?, ?, ?, ?)',
-            [name, email, hashedPassword, phone || null],
-            function(err) {
-                if (err) {
-                    if (err.code === 'SQLITE_CONSTRAINT') {
-                        return res.status(400).json({ success: false, message: "Этот email уже занят" });
-                    }
-                    return res.status(500).json({ success: false, message: "Ошибка сервера" });
-                }
-                res.json({ success: true, message: "Регистрация прошла успешно!" });
-            });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Ошибка сервера" });
-    }
-});
-
-// Логин
+// ====================== ОБЫЧНЫЙ ЛОГИН ======================
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
 
@@ -91,7 +65,7 @@ app.post('/api/login', (req, res) => {
         }
 
         const token = jwt.sign(
-            { id: user.id, name: user.name, email: user.email },
+            { id: user.id, name: user.name, email: user.email, is_admin: user.is_admin },
             SECRET_KEY,
             { expiresIn: '7d' }
         );
@@ -99,104 +73,90 @@ app.post('/api/login', (req, res) => {
         res.json({
             success: true,
             message: "Вход выполнен успешно",
-            token: token,
-            user: { id: user.id, name: user.name, email: user.email }
+            token,
+            user: { id: user.id, name: user.name, email: user.email, is_admin: user.is_admin }
         });
     });
 });
 
-// Уведомление в Тг
-async function sendOrderToTelegram(orderData, user) {
-    const BOT_TOKEN = "8444075254:AAE7yxOVhNYQTROXzhSWQEu2LDuHiXa8EVg";
-    const CHAT_ID   = "565360334";
+// ====================== АДМИН ЛОГИН ======================
+app.post('/api/admin/login', (req, res) => {
+    const { email, password } = req.body;
 
-    if (!BOT_TOKEN || BOT_TOKEN.length < 30) {
-        console.log("⚠️ Telegram не настроен (токен не указан)");
-        return;
-    }
+    db.get('SELECT * FROM users WHERE email = ? AND is_admin = 1', [email], async (err, user) => {
+        if (err || !user) {
+            return res.status(401).json({ success: false, message: "Неверный логин или пароль администратора" });
+        }
 
-    let message = `🆕 *Новый заказ #${orderData.order_id}*\n\n`;
-    message += `👤 *Клиент:* ${user.name}\n`;
-    message += `📧 Email: ${user.email}\n`;
-    message += `📞 Телефон: ${user.phone || 'не указан'}\n\n`;
-    message += `🛒 *Состав заказа:*\n`;
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ success: false, message: "Неверный логин или пароль администратора" });
+        }
 
-    orderData.items.forEach(item => {
-        message += `• ${item.name} × ${item.quantity} = *${item.price * item.quantity} ₸*\n`;
+        const token = jwt.sign(
+            { id: user.id, name: user.name, email: user.email, is_admin: true },
+            SECRET_KEY,
+            { expiresIn: '12h' }
+        );
+
+        res.json({
+            success: true,
+            message: "Вход в админ-панель выполнен",
+            token,
+            user: { id: user.id, name: user.name, email: user.email, is_admin: true }
+        });
     });
+});
 
-    message += `\n💰 *Итого к оплате:* *${orderData.total} ₸*`;
+// ====================== ПОЛУЧИТЬ ВСЕ ЗАКАЗЫ (ДЛЯ АДМИНА) ======================
+app.get('/api/admin/orders', (req, res) => {
+    const sql = `
+        SELECT o.*, u.name as user_name, u.email as user_email, u.phone as user_phone,
+               (SELECT json_group_array(
+                   json_object('name', oi.dish_name, 'quantity', oi.quantity, 'price', oi.price)
+               ) FROM order_items oi WHERE oi.order_id = o.id) as items
+        FROM orders o
+        JOIN users u ON o.user_id = u.id
+        ORDER BY o.created_at DESC
+    `;
 
-    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+    db.all(sql, [], (err, orders) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: "Ошибка получения заказов" });
+        }
 
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: CHAT_ID,
-                text: message,
-                parse_mode: 'Markdown'
-            })
+        orders.forEach(order => {
+            order.items = order.items ? JSON.parse(order.items) : [];
         });
 
-        const result = await response.json();
+        res.json({ success: true, orders });
+    });
+});
 
-        if (result.ok) {
-            console.log('Заказ успешно отправлен в Telegram');
-        } else {
-            console.error('Ошибка Telegram:', result.description);
-        }
-    } catch (err) {
-        console.error('Ошибка отправки в Telegram:', err.message);
-    }
-}
+// ====================== ОБНОВИТЬ СТАТУС ЗАКАЗА ======================
+app.put('/api/admin/orders/:id/status', (req, res) => {
+    const orderId = req.params.id;
+    const { status } = req.body;
 
-// оформ. заказа
-app.post('/api/orders', (req, res) => {
-    const { user_id, items, total } = req.body;
+    const allowedStatuses = ['pending', 'preparing', 'ready', 'delivered', 'completed', 'cancelled'];
 
-    if (!user_id || !items || items.length === 0) {
-        return res.status(400).json({ success: false, message: "Неверные данные заказа" });
+    if (!allowedStatuses.includes(status)) {
+        return res.status(400).json({ success: false, message: "Недопустимый статус" });
     }
 
     db.run(
-        'INSERT INTO orders (user_id, total_amount, status) VALUES (?, ?, ?)',
-        [user_id, total, 'pending'],
+        'UPDATE orders SET status = ? WHERE id = ?',
+        [status, orderId],
         function(err) {
             if (err) {
-                console.error(err);
-                return res.status(500).json({ success: false, message: "Ошибка при создании заказа" });
+                return res.status(500).json({ success: false, message: "Ошибка обновления статуса" });
             }
-
-            const orderId = this.lastID;
-
-            const stmt = db.prepare('INSERT INTO order_items (order_id, dish_name, quantity, price) VALUES (?, ?, ?, ?)');
-            items.forEach(item => {
-                stmt.run(orderId, item.name, item.quantity, item.price);
-            });
-            stmt.finalize();
-
-            db.get('SELECT name, email, phone FROM users WHERE id = ?', [user_id], (err, user) => {
-                if (!err && user) {
-                    sendOrderToTelegram({
-                        order_id: orderId,
-                        items: items,
-                        total: total
-                    }, user);
-                }
-            });
-
-            res.json({ 
-                success: true, 
-                message: "Заказ успешно оформлен!", 
-                order_id: orderId 
-            });
+            res.json({ success: true, message: "Статус заказа обновлён" });
         }
     );
 });
 
-// история заказов
+// ====================== ИСТОРИЯ ЗАКАЗОВ ПОЛЬЗОВАТЕЛЯ (С СТАТУСОМ) ======================
 app.get('/api/orders/:user_id', (req, res) => {
     const userId = req.params.user_id;
 
@@ -211,7 +171,6 @@ app.get('/api/orders/:user_id', (req, res) => {
         [userId],
         (err, orders) => {
             if (err) {
-                console.error(err);
                 return res.status(500).json({ success: false, message: "Ошибка получения заказов" });
             }
 
@@ -224,25 +183,29 @@ app.get('/api/orders/:user_id', (req, res) => {
     );
 });
 
+// ====================== СЕРВИНГ ФРОНТЕНДА ======================
 const frontendRoot = path.join(__dirname, '..');
-
 app.use(express.static(frontendRoot));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(frontendRoot, 'html', 'index.html'));
 });
 
-app.get('/cart.html', (req, res) => {
+app.get('/html/cart.html', (req, res) => {
     res.sendFile(path.join(frontendRoot, 'html', 'cart.html'));
 });
 
-app.get('/profile.html', (req, res) => {
+app.get('/html/profile.html', (req, res) => {
     res.sendFile(path.join(frontendRoot, 'html', 'profile.html'));
 });
 
-app.get('*', (req, res) => {
-    if (req.path.includes('.')) {
-        return res.status(404).send('Not found');
+app.get('/html/admin.html', (req, res) => {
+    res.sendFile(path.join(frontendRoot, 'html', 'admin.html'));
+});
+
+app.use((req, res) => {
+    if (req.path.startsWith('/api')) {
+        return res.status(404).json({ success: false, message: 'API route not found' });
     }
     res.sendFile(path.join(frontendRoot, 'html', 'index.html'));
 });
