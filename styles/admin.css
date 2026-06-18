@@ -1,0 +1,125 @@
+/* ====================== АДМИН-ПАНЕЛЬ ====================== */
+
+.admin-container {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.admin-container h1 {
+    margin-bottom: 30px;
+    color: #fff;
+}
+
+/* Таблица заказов */
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #111;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.order-table th {
+    background: #1a1a1a;
+    color: #d9230e;
+    text-align: left;
+    padding: 16px 14px;
+    font-weight: 600;
+    font-size: 0.95em;
+    border-bottom: 2px solid #333;
+}
+
+.order-table td {
+    padding: 14px;
+    border-bottom: 1px solid #333;
+    vertical-align: top;
+    color: #ddd;
+}
+
+.order-table tr:hover {
+    background: #1a1a1a;
+}
+
+.order-table td strong {
+    color: #fff;
+}
+
+/* Статусы */
+.status-badge {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    text-align: center;
+    min-width: 110px;
+}
+
+.status-pending    { background: #f59e0b; color: #000; }
+.status-preparing  { background: #3b82f6; color: #fff; }
+.status-ready      { background: #22c55e; color: #000; }
+.status-delivered  { background: #15803d; color: #fff; }
+.status-completed  { background: #6b7280; color: #fff; }
+.status-cancelled  { background: #ef4444; color: #fff; }
+
+/* Выпадающий список статуса */
+.order-table select {
+    padding: 8px 12px;
+    border: 1px solid #444;
+    background: #1f1f1f;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 0.95em;
+    cursor: pointer;
+}
+
+.order-table select:focus {
+    border-color: #d9230e;
+    outline: none;
+}
+
+/* Кнопка "Сохранить" */
+.order-table button {
+    background: #d9230e;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.order-table button:hover {
+    background: #b81e0b;
+    transform: translateY(-1px);
+}
+
+.logout-btn {
+    background: #d9230e;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.logout-btn:hover {
+    background: #b81e0b;
+}
+
+/* Адаптив */
+@media (max-width: 900px) {
+    .order-table {
+        font-size: 0.9em;
+    }
+    
+    .order-table th, 
+    .order-table td {
+        padding: 10px 8px;
+    }
+}

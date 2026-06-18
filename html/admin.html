@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель — WABI-SABI</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+    <link rel="stylesheet" href="/styles/admin.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="/img/logo.png" alt="WABI-SABI Logo" class="logo_img">
+            <h1>WABI-SABI — Админ-панель</h1>
+        </div>
+        <div class="user-panel">
+            <a href="/html/index.html" class="panel-links">На сайт</a>
+            <button onclick="logoutAdmin()" class="logout-btn">Выйти</button>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <h1>Все заказы</h1>
+        
+        <table class="order-table">
+            <thead>
+                <tr>
+                    <th>№ заказа</th>
+                    <th>Клиент</th>
+                    <th>Контакты</th>
+                    <th>Дата</th>
+                    <th>Состав заказа</th>
+                    <th>Сумма</th>
+                    <th>Статус</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+            <tbody id="orders-table-body">
+                <!-- Сюда подгружаются заказы через JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="/js/admin.js"></script>
+</body>
+</html>

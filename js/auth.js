@@ -106,17 +106,34 @@ document.addEventListener('DOMContentLoaded', () => {
 // обновление шапки
 function updateHeaderUser() {
     const userLink = document.getElementById('user-link');
+    const adminLink = document.getElementById('admin-link');
+
     if (!userLink) return;
 
     const user = JSON.parse(localStorage.getItem('user'));
 
     if (user && user.name) {
+        // Показываем имя пользователя
         userLink.textContent = user.name;
-        userLink.href = 'profile.html';
+        userLink.href = '/html/profile.html';
         userLink.style.color = '#d9230e';
+
+        // Показываем кнопку "Админ-панель", если пользователь — админ
+        if (adminLink) {
+            if (user.is_admin === 1 || user.is_admin === true) {
+                adminLink.style.display = 'inline-block';
+            } else {
+                adminLink.style.display = 'none';
+            }
+        }
     } else {
+        // Пользователь не вошёл
         userLink.textContent = 'Войти';
         userLink.href = '#';
         userLink.style.color = '#ffffff';
+
+        if (adminLink) {
+            adminLink.style.display = 'none';
+        }
     }
 }
