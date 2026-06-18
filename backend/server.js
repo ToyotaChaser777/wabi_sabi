@@ -50,7 +50,37 @@ db.serialize(() => {
     )`);
 });
 
-// ====================== ОБЫЧНЫЙ ЛОГИН ======================
+// регистрация
+
+app.post('/api/register', async (req, res) => {
+    const { name, email, password, phone } = req.body;
+
+    if (!name || !email || !password) {
+        return res.status(400).json({ success: false, message: "Заполните имя, email и пароль" });
+    }
+
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        db.run(
+            'INSERT INTO users (name, email, password, phone, is_admin) VALUES (?, ?, ?, ?, 0)',
+            [name, email, hashedPassword, phone || null],
+            function(err) {
+                if (err) {
+                    if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+                        return res.status(400).json({ success: false, message: "Этот email уже занят" });
+                    }
+                    return res.status(500).json({ success: false, message: "Ошибка сервера" });
+                }
+                res.json({ success: true, message: "Регистрация прошла успешно!" });
+            }
+        );
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Ошибка сервера" });
+    }
+});
+
+// логин
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
 
@@ -79,7 +109,7 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-// ====================== АДМИН ЛОГИН ======================
+// админ логин
 app.post('/api/admin/login', (req, res) => {
     const { email, password } = req.body;
 
@@ -108,7 +138,7 @@ app.post('/api/admin/login', (req, res) => {
     });
 });
 
-// ====================== ПОЛУЧИТЬ ВСЕ ЗАКАЗЫ (ДЛЯ АДМИНА) ======================
+// получение всех заказов в админке
 app.get('/api/admin/orders', (req, res) => {
     const sql = `
         SELECT o.*, u.name as user_name, u.email as user_email, u.phone as user_phone,
@@ -133,7 +163,7 @@ app.get('/api/admin/orders', (req, res) => {
     });
 });
 
-// ====================== ОБНОВИТЬ СТАТУС ЗАКАЗА ======================
+// изменение статуса
 app.put('/api/admin/orders/:id/status', (req, res) => {
     const orderId = req.params.id;
     const { status } = req.body;
@@ -156,7 +186,7 @@ app.put('/api/admin/orders/:id/status', (req, res) => {
     );
 });
 
-// ====================== ИСТОРИЯ ЗАКАЗОВ ПОЛЬЗОВАТЕЛЯ (С СТАТУСОМ) ======================
+// история заказов
 app.get('/api/orders/:user_id', (req, res) => {
     const userId = req.params.user_id;
 
@@ -183,7 +213,6 @@ app.get('/api/orders/:user_id', (req, res) => {
     );
 });
 
-// ====================== СЕРВИНГ ФРОНТЕНДА ======================
 const frontendRoot = path.join(__dirname, '..');
 app.use(express.static(frontendRoot));
 
