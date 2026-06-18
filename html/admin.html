@@ -13,32 +13,45 @@
             <img src="/img/logo.png" alt="WABI-SABI Logo" class="logo_img">
             <h1>WABI-SABI — Админ-панель</h1>
         </div>
-        <div class="user-panel">
-            <a href="/html/index.html" class="panel-links">На сайт</a>
-            <button onclick="logoutAdmin()" class="logout-btn">Выйти</button>
-        </div>
     </header>
 
-    <div class="admin-container">
-        <h1>Все заказы</h1>
-        
-        <table class="order-table">
-            <thead>
-                <tr>
-                    <th>№ заказа</th>
-                    <th>Клиент</th>
-                    <th>Контакты</th>
-                    <th>Дата</th>
-                    <th>Состав заказа</th>
-                    <th>Сумма</th>
-                    <th>Статус</th>
-                    <th>Действие</th>
-                </tr>
-            </thead>
-            <tbody id="orders-table-body">
-                <!-- Сюда подгружаются заказы через JS -->
-            </tbody>
-        </table>
+    <!-- Форма входа -->
+    <div id="admin-login-form" class="admin-login-container">
+        <div class="admin-login-box">
+            <h2>Вход в админ-панель</h2>
+            <form id="admin-login">
+                <input type="email" id="admin-email" placeholder="Email администратора" required>
+                <input type="password" id="admin-password" placeholder="Пароль" required>
+                <button type="submit">Войти</button>
+            </form>
+            <p id="admin-login-error" style="color: #ef4444; margin-top: 10px;"></p>
+        </div>
+    </div>
+
+    <!-- Основная панель (скрыта по умолчанию) -->
+    <div id="admin-panel" style="display: none;">
+        <div class="admin-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h1>Все заказы</h1>
+                <button onclick="logoutAdmin()" class="logout-btn">Выйти</button>
+            </div>
+
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>№ заказа</th>
+                        <th>Клиент</th>
+                        <th>Контакты</th>
+                        <th>Дата</th>
+                        <th>Состав</th>
+                        <th>Сумма</th>
+                        <th>Статус</th>
+                        <th>Действие</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-table-body"></tbody>
+            </table>
+        </div>
     </div>
 
     <script src="/js/admin.js"></script>
