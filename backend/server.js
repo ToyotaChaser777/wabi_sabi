@@ -138,6 +138,40 @@ app.post('/api/admin/login', (req, res) => {
     });
 });
 
+// оформление заказов
+app.post('/api/orders', (req, res) => {
+    const { user_id, items, total } = req.body;
+
+    if (!user_id || !items || items.length === 0) {
+        return res.status(400).json({ success: false, message: "Неверные данные заказа" });
+    }
+
+    db.run(
+        'INSERT INTO orders (user_id, total_amount, status) VALUES (?, ?, ?)',
+        [user_id, total, 'pending'],
+        function(err) {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ success: false, message: "Ошибка при создании заказа" });
+            }
+
+            const orderId = this.lastID;
+
+            const stmt = db.prepare('INSERT INTO order_items (order_id, dish_name, quantity, price) VALUES (?, ?, ?, ?)');
+            items.forEach(item => {
+                stmt.run(orderId, item.name, item.quantity, item.price);
+            });
+            stmt.finalize();
+
+            res.json({ 
+                success: true, 
+                message: "Заказ успешно оформлен!", 
+                order_id: orderId 
+            });
+        }
+    );
+});
+
 // получение всех заказов в админке
 app.get('/api/admin/orders', (req, res) => {
     const sql = `
