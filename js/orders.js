@@ -42,7 +42,7 @@ async function loadOrders() {
                         <span>Итого:</span> <strong>${order.total_amount} ₸</strong>
                     </div>
                     <div style="margin-top: 10px;">
-                        <span class="status-badge ${statusClass}">${statusText}</span>
+                        <span class="status-badge ${statusClass}">Статус заказа: ${statusText}</span>
                     </div>
                 </div>
             `;

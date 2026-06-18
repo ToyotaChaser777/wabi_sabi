@@ -3,11 +3,11 @@ const API_URL = 'https://wabi-sabi-8pwb.onrender.com';
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('adminToken');
 
+    // Если токен есть — сразу показываем панель
     if (token) {
-        // Уже авторизован — показываем панель
         showAdminPanel();
     } else {
-        // Показываем форму входа
+        // Если токена нет — показываем форму входа
         document.getElementById('admin-login-form').style.display = 'flex';
         document.getElementById('admin-panel').style.display = 'none';
     }
@@ -18,9 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const email = document.getElementById('admin-email').value;
+            const email = document.getElementById('admin-email').value.trim();
             const password = document.getElementById('admin-password').value;
             const errorEl = document.getElementById('admin-login-error');
+
+            errorEl.textContent = '';
 
             try {
                 const res = await fetch(`${API_URL}/api/admin/login`, {
@@ -35,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('adminToken', data.token);
                     showAdminPanel();
                 } else {
-                    errorEl.textContent = data.message || 'Ошибка входа';
+                    errorEl.textContent = data.message || 'Неверный логин или пароль';
                 }
             } catch (err) {
                 errorEl.textContent = 'Ошибка соединения с сервером';
@@ -52,22 +54,32 @@ function showAdminPanel() {
 
 async function loadAdminOrders() {
     const token = localStorage.getItem('adminToken');
+    const tbody = document.getElementById('orders-table-body');
 
     try {
         const res = await fetch(`${API_URL}/api/admin/orders`, {
-            headers: { 'Authorization': `Bearer ${token}` }
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
         });
 
         const data = await res.json();
 
         if (!data.success) {
-            alert('Ошибка загрузки заказов');
+            tbody.innerHTML = `<tr><td colspan="8" style="color: red; text-align: center;">Ошибка: ${data.message}</td></tr>`;
+            return;
+        }
+
+        if (!data.orders || data.orders.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 40px;">Заказов пока нет</td></tr>`;
             return;
         }
 
         renderOrdersTable(data.orders);
+
     } catch (err) {
         console.error(err);
+        tbody.innerHTML = `<tr><td colspan="8" style="color: red; text-align: center;">Ошибка загрузки заказов</td></tr>`;
     }
 }
 
@@ -76,14 +88,18 @@ function renderOrdersTable(orders) {
     tbody.innerHTML = '';
 
     orders.forEach(order => {
-        const date = new Date(order.created_at).toLocaleDateString('ru-RU');
+        const date = new Date(order.created_at).toLocaleDateString('ru-RU', {
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+
         const itemsHtml = order.items.map(i => `${i.name} ×${i.quantity}`).join('<br>');
 
         const row = `
             <tr>
                 <td>#${order.id}</td>
                 <td>${order.user_name}</td>
-                <td>${order.user_email}<br>${order.user_phone || ''}</td>
+                <td>${order.user_email}<br><small>${order.user_phone || '—'}</small></td>
                 <td>${date}</td>
                 <td>${itemsHtml}</td>
                 <td><strong>${order.total_amount} ₸</strong></td>
@@ -122,14 +138,15 @@ async function updateOrderStatus(orderId) {
         });
 
         const data = await res.json();
+
         if (data.success) {
-            alert('Статус обновлён!');
+            alert('Статус обновлён');
             loadAdminOrders();
         } else {
-            alert(data.message);
+            alert('Ошибка: ' + data.message);
         }
     } catch (err) {
-        alert('Ошибка обновления статуса');
+        alert('Ошибка при обновлении статуса');
     }
 }
 
