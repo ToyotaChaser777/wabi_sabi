@@ -210,6 +210,16 @@ app.post('/api/orders', (req, res) => {
             });
             stmt.finalize();
 
+            db.get('SELECT name, email, phone FROM users WHERE id = ?', [user_id], (err, user) => {
+                if (!err && user) {
+                    sendOrderToTelegram({
+                        order_id: orderId,
+                        items: items,
+                        total: total
+                    }, user);
+                }
+            });
+
             res.json({ 
                 success: true, 
                 message: "Заказ успешно оформлен!", 
