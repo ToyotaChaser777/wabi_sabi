@@ -138,6 +138,53 @@ app.post('/api/admin/login', (req, res) => {
     });
 });
 
+// Уведомление в Тг
+async function sendOrderToTelegram(orderData, user) {
+    const BOT_TOKEN = "8444075254:AAE7yxOVhNYQTROXzhSWQEu2LDuHiXa8EVg";
+    const CHAT_ID   = "565360334";
+
+    if (!BOT_TOKEN || BOT_TOKEN.length < 30) {
+        console.log("⚠️ Telegram не настроен (токен не указан)");
+        return;
+    }
+
+    let message = `🆕 *Новый заказ #${orderData.order_id}*\n\n`;
+    message += `👤 *Клиент:* ${user.name}\n`;
+    message += `📧 Email: ${user.email}\n`;
+    message += `📞 Телефон: ${user.phone || 'не указан'}\n\n`;
+    message += `🛒 *Состав заказа:*\n`;
+
+    orderData.items.forEach(item => {
+        message += `• ${item.name} × ${item.quantity} = *${item.price * item.quantity} ₸*\n`;
+    });
+
+    message += `\n💰 *Итого к оплате:* *${orderData.total} ₸*`;
+
+    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: message,
+                parse_mode: 'Markdown'
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.ok) {
+            console.log('Заказ успешно отправлен в Telegram');
+        } else {
+            console.error('Ошибка Telegram:', result.description);
+        }
+    } catch (err) {
+        console.error('Ошибка отправки в Telegram:', err.message);
+    }
+}
+
 // оформление заказов
 app.post('/api/orders', (req, res) => {
     const { user_id, items, total } = req.body;
