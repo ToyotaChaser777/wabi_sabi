@@ -88,9 +88,14 @@ function renderOrdersTable(orders) {
     tbody.innerHTML = '';
 
     orders.forEach(order => {
-        const date = new Date(order.created_at).toLocaleDateString('ru-RU', {
-            day: '2-digit', month: '2-digit', year: 'numeric',
-            hour: '2-digit', minute: '2-digit'
+        const date = new Date(order.created_at);
+        const formattedDate = date.toLocaleString('ru-RU', {
+            timeZone: 'Asia/Almaty',
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
         });
 
         const itemsHtml = order.items.map(i => `${i.name} ×${i.quantity}`).join('<br>');

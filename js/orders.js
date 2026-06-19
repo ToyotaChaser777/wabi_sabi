@@ -23,7 +23,15 @@ async function loadOrders() {
 
         let html = '';
         data.orders.forEach(order => {
-            const date = new Date(order.created_at).toLocaleDateString('ru-RU');
+            const date = new Date(order.created_at);
+            const formattedDate = date.toLocaleString('ru-RU', {
+                timeZone: 'Asia/Almaty',
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
             const statusText = getStatusText(order.status);
             const statusClass = `status-${order.status}`;
 
@@ -35,7 +43,7 @@ async function loadOrders() {
                 <div class="order-card">
                     <div class="order-header">
                         <strong>Заказ #${order.id}</strong>
-                        <span class="order-date">${date}</span>
+                        <span class="order-date">${formattedDate}</span>
                     </div>
                     <div class="order-items">${itemsHtml}</div>
                     <div class="order-total">
